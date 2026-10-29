@@ -64,7 +64,7 @@ jobs:
           allowed=false
 
           if [[ "$EVENT_NAME" == "push" &&
-                  "$REF" == refs/tags/* ]]; then
+                  ("$REF" == refs/tags/v* || "$REF" =~ ^refs/tags/20[0-9]{6}$ ) ]]; then
             git fetch origin main
             if git merge-base --is-ancestor \
                 "$COMMIT" origin/main; then

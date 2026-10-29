@@ -49,7 +49,6 @@ jobs:
             echo "Invalid tag: use only letters, digits, dots, underscores and hyphens."
             exit 1
           fi
-          echo "tag=$tag"
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
       - name: Check release policy
         id: release_policy
@@ -65,15 +64,14 @@ jobs:
 
           if [[ "$EVENT_NAME" == "push" &&
                   ("$REF" == refs/tags/v* || "$REF" =~ ^refs/tags/20[0-9]{6}$ ) ]]; then
-            git fetch origin main
+            git fetch origin main >/dev/null 2>&1;
             if git merge-base --is-ancestor \
-                "$COMMIT" origin/main; then
+                "$COMMIT" origin/main >/dev/null 2>&1; then
               allowed=true
             else
               echo "Tag commit is not reachable from main; artifacts only."
             fi
           fi
-          echo "allowed=$allowed"
           echo "allowed=$allowed" >> "$GITHUB_OUTPUT"
 
       - name: Build assets
@@ -143,6 +141,7 @@ jobs:
         with:
           tag_name: ${{ steps.release_tag.outputs.tag }}
           target_commitish: ${{ github.sha }}
+          token: ${{ github.token }}
           name: ${{ steps.release_tag.outputs.tag }}
           generate_release_notes: true
           fail_on_unmatched_files: true

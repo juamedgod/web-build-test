@@ -5,6 +5,8 @@ on:
   push:
     tags:
       - "v*.*.*"
+      # Date style (we expect 20xx year, it will byte us in 70 years...)
+      - "20[0-9]*"
   workflow_dispatch:
     inputs:
       tag:

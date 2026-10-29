@@ -49,6 +49,7 @@ jobs:
             echo "Invalid tag: use only letters, digits, dots, underscores and hyphens."
             exit 1
           fi
+          echo "tag=$tag"
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
       - name: Check release policy
         id: release_policy
@@ -63,7 +64,7 @@ jobs:
           allowed=false
 
           if [[ "$EVENT_NAME" == "push" &&
-                  "$REF" == refs/tags/v* ]]; then
+                  "$REF" == refs/tags/* ]]; then
             git fetch origin main
             if git merge-base --is-ancestor \
                 "$COMMIT" origin/main; then
@@ -72,7 +73,7 @@ jobs:
               echo "Tag commit is not reachable from main; artifacts only."
             fi
           fi
-
+          echo "allowed=$allowed"
           echo "allowed=$allowed" >> "$GITHUB_OUTPUT"
 
       - name: Build assets
